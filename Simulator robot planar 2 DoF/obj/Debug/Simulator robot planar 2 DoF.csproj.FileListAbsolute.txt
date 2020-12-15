@@ -1,0 +1,10 @@
+E:\PENS\semester 4\praktikum\robotika\simulator robot planar\Simulator robot planar 2 DoF\Simulator robot planar 2 DoF\bin\Debug\Simulator robot planar 2 DoF.exe.config
+E:\PENS\semester 4\praktikum\robotika\simulator robot planar\Simulator robot planar 2 DoF\Simulator robot planar 2 DoF\bin\Debug\Simulator robot planar 2 DoF.exe
+E:\PENS\semester 4\praktikum\robotika\simulator robot planar\Simulator robot planar 2 DoF\Simulator robot planar 2 DoF\bin\Debug\Simulator robot planar 2 DoF.pdb
+E:\PENS\semester 4\praktikum\robotika\simulator robot planar\Simulator robot planar 2 DoF\Simulator robot planar 2 DoF\obj\Debug\Simulator robot planar 2 DoF.csprojAssemblyReference.cache
+E:\PENS\semester 4\praktikum\robotika\simulator robot planar\Simulator robot planar 2 DoF\Simulator robot planar 2 DoF\obj\Debug\Simulator_robot_planar_2_DoF.Form1.resources
+E:\PENS\semester 4\praktikum\robotika\simulator robot planar\Simulator robot planar 2 DoF\Simulator robot planar 2 DoF\obj\Debug\Simulator_robot_planar_2_DoF.Properties.Resources.resources
+E:\PENS\semester 4\praktikum\robotika\simulator robot planar\Simulator robot planar 2 DoF\Simulator robot planar 2 DoF\obj\Debug\Simulator robot planar 2 DoF.csproj.GenerateResource.cache
+E:\PENS\semester 4\praktikum\robotika\simulator robot planar\Simulator robot planar 2 DoF\Simulator robot planar 2 DoF\obj\Debug\Simulator robot planar 2 DoF.csproj.CoreCompileInputs.cache
+E:\PENS\semester 4\praktikum\robotika\simulator robot planar\Simulator robot planar 2 DoF\Simulator robot planar 2 DoF\obj\Debug\Simulator robot planar 2 DoF.exe
+E:\PENS\semester 4\praktikum\robotika\simulator robot planar\Simulator robot planar 2 DoF\Simulator robot planar 2 DoF\obj\Debug\Simulator robot planar 2 DoF.pdb
