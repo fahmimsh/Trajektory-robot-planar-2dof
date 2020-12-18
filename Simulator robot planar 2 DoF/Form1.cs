@@ -21,13 +21,18 @@ namespace Simulator_robot_planar_2_DoF
         {
             InitializeComponent();
         }
-        int Pilihan, Objek, endtime = 0, jalan, titik = 0, titik_baru, titik_csv, simpan_data_cek;
+        int Pilihan, Objek, endtime = 0, jalan, titik = 0, simpan_data_cek;
         double L1 = 4, L2 = 4, Teta1 = 0.0, Teta2 = 0.0, x1 = 4.0, x2 = 8.0, y1 = 0.0, y2 = 0.0;
         double x2_inv = 8.0, y2_inv = 0.0, x1_inv = 0.0, y1_inv = 0.0, runtime = 0;
         double inv_Teta1 = 0.0, inv_Teta2 = 0.0, rad1 = 0.0, rad2 = 0.0;
         double teta1start = 0.0, teta2start = 0.0, teta1end = 0.0, teta2end = 0.0;
         double y2_inv_end = 0.0, y2_inv_start = 0.0, x2_inv_start = 0.0, x2_inv_end = 0.0;
         double diameter = 0.0, sisi = 0.0, titik_X = 0.0, titik_Y = 0.0;
+        string line; System.IO.StreamReader reader; StreamWriter csv;
+        private void baca()
+        {
+            reader = new StreamReader("Robot planar.csv");
+        }
         /*--------FORWAWD KINEMATIKA----------*/
         private void Forward_kinematika()
         {
@@ -49,19 +54,28 @@ namespace Simulator_robot_planar_2_DoF
         {
             if (Math.Sqrt(Math.Pow(x2_inv, 2) + Math.Pow(y2_inv, 2)) > L1 + L2)
             {
-                MessageBox.Show("Turunkan Nilai Posisi X atau Y !!!", "Batas Maksimum nilai");
                 timer1.Enabled = false;
+                MessageBox.Show("Turunkan Nilai Posisi X atau Y !!!", "Batas Maksimum nilai");
                 runtime = 0;
             }
             else if (Math.Sqrt(Math.Pow(x2_inv, 2) + Math.Pow(y2_inv, 2)) < (L1 - L2))
             {
-                MessageBox.Show("Naikkan Nilai Posisi X atau Y !!!", "BATAS MINIMUM LENGAN");
                 timer1.Enabled = false;
+                MessageBox.Show("Naikkan Nilai Posisi X atau Y !!!", "Batas Minimum Nilai");
                 runtime = 0;
             }
             else
             {
                 if (x2_inv == 0) x2_inv = 0.00000000000001;
+                else if (radioButton3.Checked == true)
+                {
+                    if (Math.Sqrt(Math.Pow(titik_X, 2) + Math.Pow(titik_Y, 2)) * (sisi * 0.5) > L1 + L2 || Math.Sqrt(Math.Pow(titik_X, 2) + Math.Pow(titik_Y, 2)) * (diameter * 0.5) > L1 + L2)
+                    {
+                        timer1.Enabled = false;
+                        MessageBox.Show("Turunkan Sisi/diameter atau Titik tengah !!!", "Nilai Melebihi Batas");
+                        runtime = 0;
+                    }
+                }
                 rad2 = Math.Acos(((x2_inv * x2_inv) + (y2_inv * y2_inv) - (L1 * L1) - (L2 * L2)) / (2 * L1 * L2));
                 rad1 = Math.Atan2(y2_inv, x2_inv) - Math.Atan2((L2 * Math.Sin(rad2)), (L1 + (L2 * Math.Cos(rad2))));
                 inv_Teta1 = rad1 * 180 / Math.PI;
@@ -96,10 +110,10 @@ namespace Simulator_robot_planar_2_DoF
                     x2_inv = x2_inv_start + (((x2_inv_end - x2_inv_start) * runtime) / endtime);
                     y2_inv = y2_inv_start + (((y2_inv_end - y2_inv_start) * runtime) / endtime);
                     Invers_kinematika();
-                    x2_inv_start = x2_inv; 
+                    x2_inv_start = x2_inv;
                     y2_inv_start = y2_inv;
                 } //invers
-                else if(Pilihan == 3)
+                else if (Pilihan == 3)
                 {
                     if (Objek == 1)
                     {
@@ -129,7 +143,7 @@ namespace Simulator_robot_planar_2_DoF
                                 {
                                     x2_inv = x2_1;
                                     y2_inv = (titik_Y + sisi * 3) - runtime;
-                                    if(y2_1 > y2_inv)
+                                    if (y2_1 > y2_inv)
                                     {
                                         x2_inv = (titik_X - sisi * 4) + runtime;
                                         y2_inv = y2_1;
@@ -162,7 +176,7 @@ namespace Simulator_robot_planar_2_DoF
                             {
                                 x2_inv = (titik_X + sisi * 2) - runtime;
                                 y2_inv = (titik_Y + sisi * 2) - runtime;
-                                if(titik_Y >= y2_inv && titik_X >= x2_inv)
+                                if (titik_Y >= y2_inv && titik_X >= x2_inv)
                                 {
                                     timer1.Enabled = false;
                                     if (checkBox2.Checked == true)
@@ -176,25 +190,43 @@ namespace Simulator_robot_planar_2_DoF
                         }
                         Invers_kinematika();
                     } //segitiga
-                } 
-            } else if (Pilihan == 4)
+                }
+                if (runtime == endtime || runtime >= 360)
+                {
+                    if (checkBox4.Checked == false)
+                    {
+                        timer1.Enabled = false;
+                        if (checkBox2.Checked == true)
+                        {
+                            MessageBox.Show("Data berhasil disimpan di file");
+                        }
+                        runtime = 0;
+                    }
+                    else
+                        MessageBox.Show("Timer interval yang kamu masukkan kurang");
+                }
+                simpan_data();
+            } else if (jalan == 2)
             {
-
-            }
-            if (runtime == endtime ||/* x2_inv_start == x2_inv_end && y2_inv_start == y2_inv_end ||*/ runtime >= 360)
-            {
-                if (checkBox4.Checked == false)
+                if ((line = reader.ReadLine()) != null)
+                {
+                    var values = line.Split(',');
+                    titik = Convert.ToInt32(values[0]);
+                    Console.WriteLine(x2_inv = Convert.ToDouble(values[1]));
+                    Console.WriteLine(y2_inv = Convert.ToDouble(values[2]));
+                    int milliseconds = 200;
+                    Thread.Sleep(milliseconds);
+                    Invers_kinematika();
+                    Pilihan = 2;
+                    simpan_data();
+                }
+                else
                 {
                     timer1.Enabled = false;
-                    if (checkBox2.Checked == true)
-                    {
-                        MessageBox.Show("Data berhasil disimpan di file");
-                    }
-                    runtime = 0;
-                } else
-                    MessageBox.Show("Timer interval yang kamu masukkan kurang");
-            }
-            simpan_data();
+                    MessageBox.Show("Data CSV Sudah berhasil di PlayBack");
+                    reader.Close();
+                }
+            } // Play Back Data CSV
         }
         /*---------------INPUT NILAI------------------------*/
         private void chart1_MouseClick(object sender, MouseEventArgs e)
@@ -235,7 +267,7 @@ namespace Simulator_robot_planar_2_DoF
             listBox1.SelectedIndex = listBox1.Items.Count - 1;
             if (simpan_data_cek == 1)
             {
-                StreamWriter csv = new StreamWriter("Robot planar.csv");
+                csv = new StreamWriter("Robot planar.csv");
                 var a = titik; var b = label18.Text; var c = label19.Text;
                 var d = label15.Text; var f = label17.Text;
                 var newLine = string.Format("{0},{1},{2},{3},{4}", a, b, c, d, f);
@@ -245,36 +277,38 @@ namespace Simulator_robot_planar_2_DoF
                     csv.WriteLine(baruLine);
                 }
                 csv.Close();
-            }
+            } 
         }
         private void button1_Click(object sender, EventArgs e)
         {
             timer1.Enabled = true;
-            if (endtime == 0)
+            if (radioButton1.Checked == false && radioButton2.Checked == false && radioButton3.Checked == false) 
             {
-                MessageBox.Show("Masukkan Timer terlebih dahulu", "TIMER BERKATA");
-            } else
+                MessageBox.Show("Pilih Jenis simulasi gerak terlebih dahulu (INVERS, FORWARD ATAU OBJECT)", "SIMULASI GERAK BERKATA");
+            } else if (endtime == 0)
+            {
+                MessageBox.Show("Masukkan Timming(det) terlebih dahulu", "TIMER BERKATA");
+            }
+            else
             {
                 jalan = 1;
+                if(radioButton3.Checked == true)
+                {
+                    if (checkBox3.Checked == false && checkBox4.Checked == false && checkBox5.Checked == false)
+                    {
+                        jalan = 0;
+                        MessageBox.Show("Pilih Objek Trajektory terlebih dahulu (Lingkaran, Persegi ATAU Segitiga)", "Objek Trayektori BERKATA");
+                    } else if (checkBox3.Checked == true) { endtime *= 4; }
+                    else if (checkBox4.Checked == true) { endtime += 20; }
+                    else if(checkBox5.Checked == true) { endtime += 10; }
+                }
             }
         }
         private void button2_Click(object sender, EventArgs e)
         {
-            string line;
-            var reader = new StreamReader("Robot planar.csv");
-            while ((line = reader.ReadLine()) != null)
-            {
-                var values = line.Split(',');
-                titik = Convert.ToInt32(values[0]);
-                Console.WriteLine(x2_inv = Convert.ToDouble(values[1]));
-                Console.WriteLine(y2_inv = Convert.ToDouble(values[2]));
-                int milliseconds = 100;
-                Thread.Sleep(milliseconds);
-                Invers_kinematika();
-                simpan_data();
-                Pilihan = 2; jalan = 1;
-            }
-            Invers_kinematika();
+            timer1.Enabled = true; baca();
+            simpan_data_cek = 0;
+            jalan = 2; line = "1";
         }
         private void button3_Click(object sender, EventArgs e)
         {
