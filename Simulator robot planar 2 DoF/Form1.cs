@@ -31,7 +31,10 @@ namespace Simulator_robot_planar_2_DoF
         string line; System.IO.StreamReader reader; StreamWriter csv;
         private void baca()
         {
-            reader = new StreamReader("Robot planar.csv");
+            if (jalan == 2)
+            {
+                reader = new StreamReader("Robot planar.csv");
+            }
         }
         /*--------FORWAWD KINEMATIKA----------*/
         private void Forward_kinematika()
@@ -222,9 +225,9 @@ namespace Simulator_robot_planar_2_DoF
                 }
                 else
                 {
+                    reader.Close();
                     timer1.Enabled = false;
                     MessageBox.Show("Data CSV Sudah berhasil di PlayBack");
-                    reader.Close();
                 }
             } // Play Back Data CSV
         }
@@ -284,10 +287,13 @@ namespace Simulator_robot_planar_2_DoF
             timer1.Enabled = true;
             if (radioButton1.Checked == false && radioButton2.Checked == false && radioButton3.Checked == false) 
             {
+                timer1.Enabled = false;
                 MessageBox.Show("Pilih Jenis simulasi gerak terlebih dahulu (INVERS, FORWARD ATAU OBJECT)", "SIMULASI GERAK BERKATA");
             } else if (endtime == 0)
             {
+                timer1.Enabled = false;
                 MessageBox.Show("Masukkan Timming(det) terlebih dahulu", "TIMER BERKATA");
+                runtime = 0;
             }
             else
             {
@@ -296,7 +302,7 @@ namespace Simulator_robot_planar_2_DoF
                 {
                     if (checkBox3.Checked == false && checkBox4.Checked == false && checkBox5.Checked == false)
                     {
-                        jalan = 0;
+                        jalan = 0; timer1.Enabled = false;
                         MessageBox.Show("Pilih Objek Trajektory terlebih dahulu (Lingkaran, Persegi ATAU Segitiga)", "Objek Trayektori BERKATA");
                     } else if (checkBox3.Checked == true) { endtime *= 4; }
                     else if (checkBox4.Checked == true) { endtime += 20; }
@@ -306,9 +312,9 @@ namespace Simulator_robot_planar_2_DoF
         }
         private void button2_Click(object sender, EventArgs e)
         {
-            timer1.Enabled = true; baca();
+            timer1.Enabled = true; 
             simpan_data_cek = 0;
-            jalan = 2; line = "1";
+            jalan = 2; baca(); line = "1";
         }
         private void button3_Click(object sender, EventArgs e)
         {

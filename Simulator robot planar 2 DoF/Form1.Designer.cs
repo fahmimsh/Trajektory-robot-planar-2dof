@@ -706,11 +706,11 @@
             // button2
             // 
             this.button2.ForeColor = System.Drawing.Color.Black;
-            this.button2.Location = new System.Drawing.Point(128, 333);
+            this.button2.Location = new System.Drawing.Point(140, 333);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(118, 28);
             this.button2.TabIndex = 34;
-            this.button2.Text = "RUN DATA CSV";
+            this.button2.Text = "PLAYBACK CSV";
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
