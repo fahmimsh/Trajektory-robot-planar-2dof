@@ -55,7 +55,7 @@ namespace Simulator_robot_planar_2_DoF
         /*---------INVERS KINEMATIKA-------------------*/
         private void Invers_kinematika()
         {
-            if (Math.Sqrt(Math.Pow(x2_inv, 2) + Math.Pow(y2_inv, 2)) > L1 + L2)
+            if (Math.Sqrt(Math.Pow(x2_inv, 2) + Math.Pow(y2_inv, 2)) > L1 + L2 + 0.5)
             {
                 timer1.Enabled = false;
                 MessageBox.Show("Turunkan Nilai Posisi X atau Y !!!", "Batas Maksimum nilai");
@@ -322,9 +322,9 @@ namespace Simulator_robot_planar_2_DoF
             Teta1 = 0.0; Teta2 = 0.0; runtime = 0; x2_inv = L1 + L2; y2_inv = 0.0;
             label14.Text = "0"; label15.Text = "0"; label17.Text = "0";
             label18.Text = "0"; label19.Text = "0"; textBox5.Text = "0";
-            listBox1.Items.Clear();
+            listBox1.Items.Clear(); checkBox2.Enabled = false;
             Forward_kinematika(); Invers_kinematika();
-            chart1.Series[2].Points.Clear();
+            chart1.Series[2].Points.Clear(); checkBox2.Enabled = true;
         }
         private void textBox3_TextChanged(object sender, EventArgs e)
         {
