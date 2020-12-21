@@ -27,15 +27,8 @@ namespace Simulator_robot_planar_2_DoF
         double inv_Teta1 = 0.0, inv_Teta2 = 0.0, rad1 = 0.0, rad2 = 0.0;
         double teta1start = 0.0, teta2start = 0.0, teta1end = 0.0, teta2end = 0.0;
         double y2_inv_end = 0.0, y2_inv_start = 0.0, x2_inv_start = 0.0, x2_inv_end = 0.0;
-        double diameter = 0.0, sisi = 0.0, titik_X = 0.0, titik_Y = 0.0;
+        double sisi = 0.0, titik_X = 0.0, titik_Y = 0.0; string namafile = "Robot planar.csv";
         string line; System.IO.StreamReader reader; StreamWriter csv;
-        private void baca()
-        {
-            if (jalan == 2)
-            {
-                reader = new StreamReader("Robot planar.csv");
-            }
-        }
         /*--------FORWAWD KINEMATIKA----------*/
         private void Forward_kinematika()
         {
@@ -72,7 +65,7 @@ namespace Simulator_robot_planar_2_DoF
                 if (x2_inv == 0) x2_inv = 0.00000000000001;
                 else if (radioButton3.Checked == true)
                 {
-                    if (Math.Sqrt(Math.Pow(titik_X, 2) + Math.Pow(titik_Y, 2)) * (sisi * 0.5) > L1 + L2 || Math.Sqrt(Math.Pow(titik_X, 2) + Math.Pow(titik_Y, 2)) * (diameter * 0.5) > L1 + L2)
+                    if (Math.Sqrt(Math.Pow(titik_X, 2) + Math.Pow(titik_Y, 2)) * (sisi * 0.5) > L1 + L2)
                     {
                         timer1.Enabled = false;
                         MessageBox.Show("Turunkan Sisi/diameter atau Titik tengah !!!", "Nilai Melebihi Batas");
@@ -87,8 +80,8 @@ namespace Simulator_robot_planar_2_DoF
                 x1_inv = L1 * Math.Cos(inv_Teta1 * Math.PI / 180);
                 y1_inv = L1 * Math.Sin(inv_Teta1 * Math.PI / 180);
 
-                textBox3.Text = Math.Round((decimal)inv_Teta1, 1).ToString();
-                textBox4.Text = Math.Round((decimal)inv_Teta2, 1).ToString();
+                textBox3.Text = Math.Round((decimal)inv_Teta1, 4).ToString();
+                textBox4.Text = Math.Round((decimal)inv_Teta2, 4).ToString();
 
                 double[] value2 = { x1_inv, y1_inv, x2_inv, y2_inv }, data_point = {x2_inv, y2_inv};
                 drawArm(0, 1, value2); drawpoint(data_point);
@@ -100,6 +93,7 @@ namespace Simulator_robot_planar_2_DoF
             if (jalan == 1)
             {
                 runtime += 0.25; titik += 1;
+                button1.BackColor = Color.Red; panel5.BackColor = Color.Blue;
                 if (Pilihan == 1)
                 {
                     Teta1 = teta1start + (((teta1end - teta1start) * runtime) / endtime);
@@ -122,8 +116,8 @@ namespace Simulator_robot_planar_2_DoF
                     {
                         int i = 360 / endtime;
                         runtime += i;
-                        x2_inv = titik_X + ((diameter / 2) * Math.Cos(Math.PI * runtime / 180));
-                        y2_inv = titik_Y - ((diameter / 2) * Math.Sin(Math.PI * runtime / 180));
+                        x2_inv = titik_X + ((sisi / 2) * Math.Cos(Math.PI * runtime / 180));
+                        y2_inv = titik_Y - ((sisi / 2) * Math.Sin(Math.PI * runtime / 180));
                         Invers_kinematika();
                     } //lingkaran 
                     else if (Objek == 2)
@@ -153,6 +147,8 @@ namespace Simulator_robot_planar_2_DoF
                                         if (titik_X < x2_inv)
                                         {
                                             timer1.Enabled = false;
+                                            button1.BackColor = Control.DefaultBackColor;
+                                            panel5.BackColor = Control.DefaultBackColor;
                                             if (checkBox2.Checked == true)
                                             {
                                                 MessageBox.Show("Data berhasil disimpan di file");
@@ -181,13 +177,14 @@ namespace Simulator_robot_planar_2_DoF
                                 y2_inv = (titik_Y + sisi * 2) - runtime;
                                 if (titik_Y >= y2_inv && titik_X >= x2_inv)
                                 {
-                                    timer1.Enabled = false;
+                                    timer1.Enabled = false; 
+                                    button1.BackColor = Control.DefaultBackColor;
+                                    panel5.BackColor = Control.DefaultBackColor;
+                                    runtime = 0;
                                     if (checkBox2.Checked == true)
                                     {
                                         MessageBox.Show("Data berhasil disimpan di file");
                                     }
-                                    runtime = 0;
-
                                 }
                             }
                         }
@@ -199,6 +196,8 @@ namespace Simulator_robot_planar_2_DoF
                     if (checkBox4.Checked == false)
                     {
                         timer1.Enabled = false;
+                        button1.BackColor = Control.DefaultBackColor;
+                        panel5.BackColor = Control.DefaultBackColor;
                         if (checkBox2.Checked == true)
                         {
                             MessageBox.Show("Data berhasil disimpan di file");
@@ -211,12 +210,14 @@ namespace Simulator_robot_planar_2_DoF
                 simpan_data();
             } else if (jalan == 2)
             {
+                panel5.BackColor = Color.Blue;
                 if ((line = reader.ReadLine()) != null)
                 {
                     var values = line.Split(',');
                     titik = Convert.ToInt32(values[0]);
                     Console.WriteLine(x2_inv = Convert.ToDouble(values[1]));
                     Console.WriteLine(y2_inv = Convert.ToDouble(values[2]));
+                    button2.BackColor = Color.Red;
                     int milliseconds = 200;
                     Thread.Sleep(milliseconds);
                     Invers_kinematika();
@@ -225,8 +226,9 @@ namespace Simulator_robot_planar_2_DoF
                 }
                 else
                 {
-                    reader.Close();
-                    timer1.Enabled = false;
+                    reader.Close();timer1.Enabled = false; 
+                    button2.BackColor = Control.DefaultBackColor;
+                    panel5.BackColor = Control.DefaultBackColor;
                     MessageBox.Show("Data CSV Sudah berhasil di PlayBack");
                 }
             } // Play Back Data CSV
@@ -270,7 +272,7 @@ namespace Simulator_robot_planar_2_DoF
             listBox1.SelectedIndex = listBox1.Items.Count - 1;
             if (simpan_data_cek == 1)
             {
-                csv = new StreamWriter("Robot planar.csv");
+                csv = new StreamWriter(namafile);
                 var a = titik; var b = label18.Text; var c = label19.Text;
                 var d = label15.Text; var f = label17.Text;
                 var newLine = string.Format("{0},{1},{2},{3},{4}", a, b, c, d, f);
@@ -282,6 +284,15 @@ namespace Simulator_robot_planar_2_DoF
                 csv.Close();
             } 
         }
+        private void baca()
+        {
+            panel2.Show(); panel3.Show(); pictureBox1.Show();
+            pictureBox2.Show(); pictureBox3.Show();
+            if (jalan == 2)
+            {
+                reader = new StreamReader(namafile);
+            }
+        }
         private void button1_Click(object sender, EventArgs e)
         {
             timer1.Enabled = true;
@@ -291,9 +302,11 @@ namespace Simulator_robot_planar_2_DoF
                 MessageBox.Show("Pilih Jenis simulasi gerak terlebih dahulu (INVERS, FORWARD ATAU OBJECT)", "SIMULASI GERAK BERKATA");
             } else if (endtime == 0)
             {
-                timer1.Enabled = false;
-                MessageBox.Show("Masukkan Timming(det) terlebih dahulu", "TIMER BERKATA");
-                runtime = 0;
+                timer1.Enabled = false; runtime = 0;
+                if (radioButton3.Checked == true)
+                {
+                    MessageBox.Show("Masukkan Panjang Interval terlebih dahulu", "TIMER BERKATA");
+                } else MessageBox.Show("Masukkan Timming(det) terlebih dahulu", "TIMER BERKATA");
             }
             else
             {
@@ -313,7 +326,7 @@ namespace Simulator_robot_planar_2_DoF
         private void button2_Click(object sender, EventArgs e)
         {
             timer1.Enabled = true; 
-            simpan_data_cek = 0;
+            simpan_data_cek = 0; 
             jalan = 2; baca(); line = "1";
         }
         private void button3_Click(object sender, EventArgs e)
@@ -325,6 +338,10 @@ namespace Simulator_robot_planar_2_DoF
             listBox1.Items.Clear(); checkBox2.Enabled = false;
             Forward_kinematika(); Invers_kinematika();
             chart1.Series[2].Points.Clear(); checkBox2.Enabled = true;
+        }
+        private void textBox6_TextChanged(object sender, EventArgs e)
+        {
+            namafile = textBox6.Text;
         }
         private void textBox3_TextChanged(object sender, EventArgs e)
         {
@@ -369,15 +386,6 @@ namespace Simulator_robot_planar_2_DoF
             }
             Console.ReadLine();
         }
-        private void textBox6_TextChanged(object sender, EventArgs e)
-        {
-            double.TryParse(textBox6.Text, out diameter);
-            if (double.TryParse(textBox6.Text, out diameter))
-            {
-                Console.WriteLine(diameter);
-            }
-            Console.ReadLine();
-        }
         private void textBox7_TextChanged(object sender, EventArgs e)
         {
             double.TryParse(textBox7.Text, out sisi);
@@ -412,11 +420,13 @@ namespace Simulator_robot_planar_2_DoF
             {
                 Pilihan = 1;
                 groupBox3.Enabled = false; groupBox2.Enabled = true;
-                groupBox1.Enabled = false;
+                groupBox1.Enabled = false; pictureBox1.Hide();
+                pictureBox2.Hide(); pictureBox3.Hide();
             }
             else
             {
-                groupBox2.Enabled = false;
+                groupBox2.Enabled = false; pictureBox1.Show();
+                pictureBox2.Show(); pictureBox3.Show();
             }
         }
         private void radioButton2_CheckedChanged(object sender, EventArgs e)
@@ -425,11 +435,13 @@ namespace Simulator_robot_planar_2_DoF
             {
                 Pilihan = 2;
                 groupBox3.Enabled = true; groupBox2.Enabled = false;
-                groupBox1.Enabled = false;
+                groupBox1.Enabled = false; pictureBox1.Hide();
+                pictureBox2.Hide(); pictureBox3.Hide();
             }
             else
             {
-                groupBox3.Enabled = false;
+                groupBox3.Enabled = false; pictureBox1.Show();
+                pictureBox2.Show(); pictureBox3.Show();
             }
         }
         private void radioButton3_CheckedChanged(object sender, EventArgs e)
@@ -438,11 +450,13 @@ namespace Simulator_robot_planar_2_DoF
             {
                 Pilihan = 3;
                 groupBox3.Enabled = false; groupBox2.Enabled = false;
-                groupBox1.Enabled = true;
+                groupBox1.Enabled = true; label7.Text = "Panjang Interval=";
+                panel2.Hide(); panel3.Hide();
             }
             else
             {
-                groupBox1.Enabled = false;
+                groupBox1.Enabled = false; label7.Text = "Timing (det)      =";
+                panel2.Show(); panel3.Show();
             }
         }
         private void drawArm(int line, int dot, double[] data)
@@ -486,8 +500,8 @@ namespace Simulator_robot_planar_2_DoF
             if (checkBox3.Checked == true)
             {
                 checkBox4.Checked = false; checkBox5.Checked = false;
-                textBox7.Enabled = false; textBox6.Enabled = true;
-                Objek = 1; label27.Text = "Titik Tengah";
+                textBox7.Enabled = true; label25.Text = "Diameter =";
+                Objek = 1; label27.Text = "Titik Tengah"; 
             }
         }
         private void checkBox4_CheckedChanged(object sender, EventArgs e)
@@ -495,7 +509,7 @@ namespace Simulator_robot_planar_2_DoF
             if (checkBox4.Checked == true)
             {
                 checkBox3.Checked = false;checkBox5.Checked = false;
-                textBox6.Enabled = false; textBox7.Enabled = true;
+                textBox7.Enabled = true; label25.Text = "Sisi           =";
                 Objek = 2; label27.Text = "Titik Tengah";
             }
         }
@@ -504,7 +518,7 @@ namespace Simulator_robot_planar_2_DoF
             if (checkBox5.Checked == true)
             {
                 checkBox3.Checked = false; checkBox4.Checked = false;
-                textBox6.Enabled = false; textBox7.Enabled = true;
+                label25.Text = "Sisi           ="; textBox7.Enabled = true;
                 Objek = 3; label27.Text = "Titik Ujung Kiri";
             }
         }
